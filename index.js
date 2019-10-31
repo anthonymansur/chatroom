@@ -7,16 +7,19 @@ app.get('/', (req, res) =>{
 });
 
 let users = new Array(100);
+for (let i = 0; i < 100; i++) {
+    users[i] = 0;
+}
 const getUser = () => {
     for (let i = 0; i < 100; i++) {
         if (users[i] === 0) {
             users[i] = 1;
-            return i;
+            return i + 1;
         }
     }
 };
 const removeUser = (num) => {
-    users[i] = 0;
+    users[num - 1] = 0;
 };
 io.on('connection', socket => {
     let user = getUser();
