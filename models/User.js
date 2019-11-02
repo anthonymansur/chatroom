@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-    email: {
+    username: {
         type: String,
         required: true
     },
@@ -17,10 +17,9 @@ const userSchema = new Schema({
     }
 });
 
-userSchema.methods.setPassword = (password) => { 
-     
+userSchema.methods.setPassword = function(password) { 
     // Creating a unique salt for a particular user 
-       this.salt = crypto.randomBytes(16).toString('hex'); 
+    this.salt = crypto.randomBytes(16).toString('hex'); 
      
     // Hashing user's salt and password with 1000 iterations, 
     //64 length and sha512 digest 
@@ -28,7 +27,7 @@ userSchema.methods.setPassword = (password) => {
     1000, 64, `sha512`).toString(`hex`); 
 }; 
 
-userSchema.methods.validPassword = function( pwd ) {
+userSchema.methods.validPassword = function(password) {
     const hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, `sha512`).toString(`hex`); 
     return this.hash === hash; 
 };

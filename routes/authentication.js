@@ -10,14 +10,33 @@ module.exports = app => {
         }
     });
     app.post('/signup', async (req, res) => {
-        if (!req.body.email || !req.body.password) {
-            res.status(400).end();
-        } else {
-            // TODO: search for user
-            const user = new User({
-                email: res.body.email
+        if (!req.body.username || !req.body.password || !req.body.confirm) {
+            res.status(400).send({
+                message: "Please enter the required fields."
             });
-            user.setPassword(req.body.password);
+        } else {
+            if (req.body.password !== req.body.confirm) {
+                return res.status(400).send({
+                    message: "passwords do not match."
+                });
+            }
+            try {
+                const dup = await User.findOne({ username: req.body.username });
+                if (dup !== null) {
+                    return res.status(400).send({
+                        message: "username already taken."
+                    });
+                }
+            } catch (e) {
+                return res.status(500).send({
+                    message: e.message
+                });
+            }
+
+            const user = new User();
+            user.username = req.body.username;
+            await user.setPassword(req.body.password);
+            console.log(user);
             try {
                 await user.save();
                 res.status(200).redirect('/');

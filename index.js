@@ -17,9 +17,9 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
 // configure the app to use bodyParser()
-// app.use(bodyParser.urlencoded({
-//     extended: true
-// }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(
